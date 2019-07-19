@@ -2,6 +2,7 @@ const fs = require('fs');
 const chalk = require('chalk');
 const {cli} = require('cli-ux');
 const csv = require('csvtojson');
+const arraySort = require('array-sort');
 const cTable = require('console.table');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
@@ -86,7 +87,7 @@ module.exports = async function (input, path) {
                 console.log(chalk.magenta('Press enter to continue'));
             }
         }
-        else if(query[1] != undefined && query[1].length > 0 && query.length == 8){
+        else if(query[1] != undefined && query[1].length > 0 && query[4] == 'WHERE' && query.length == 8){
             if(query[1] == '*' && query[2] == 'FROM'){
                 if(query[3] != undefined && query[3].trim().toLowerCase().match('.csv') && query[3].length > 4){
                     path = newPath + '/' + query[3].trim().toLowerCase();
@@ -197,6 +198,166 @@ module.exports = async function (input, path) {
                 console.log(chalk.red('Command not valid!'));
                 console.log(chalk.magenta('Press enter to continue'));
             }     
+        }
+        else if(query[1] != undefined && query[1] == '*' && query[4] == 'ORDER' && query[5] == 'BY' && query.length == 7 || query.length == 8){
+            path = newPath + '/' + query[3].trim().toLowerCase();
+            if(fs.existsSync(path) && query[3].trim().toLowerCase().match('.csv') && query[3].trim().toLowerCase().length > 4){
+                if(query[2] == 'FROM' && query.length == 7){
+                    try{
+                        cli.action.start('loading file ...');
+                        let jsonArray = await csv().fromFile(path);
+                        cli.action.stop();
+                        try{
+                            let result = arraySort(jsonArray, query[6].toLowerCase());
+                            console.table(result);
+                            console.log(chalk.magenta('Press enter to continue'));
+                        }
+                        catch(err){
+                            console.log(chalk.red(err));
+                            console.log(chalk.red(`Column ${query[6].toLowerCase()} not found!`));
+                            console.log(chalk.magenta('Press enter to continue'));
+                        }
+                    }
+                    catch(err){
+                        console.log(chalk.red(err));
+                        console.log(chalk.magenta('Press enter to continue'));
+                    }
+                }
+                else if(query[2] == 'FROM' && query.length == 8 && query[7] == 'DESC'){
+                    try{
+                        cli.action.start('loading file ...');
+                        let jsonArray = await csv().fromFile(path);
+                        cli.action.stop();
+                        try{
+                            let result = arraySort(jsonArray, query[6].toLowerCase(), {reverse: true});
+                            console.table(result);
+                            console.log(chalk.magenta('Press enter to continue'));
+                        }
+                        catch(err){
+                            console.log(chalk.red(err));
+                            console.log(chalk.red(`Column ${query[6].toLowerCase()} not found!`));
+                            console.log(chalk.magenta('Press enter to continue'));
+                        }
+                    }
+                    catch(err){
+                        console.log(chalk.red(err));
+                        console.log(chalk.magenta('Press enter to continue'));
+                    }
+                }
+                else{
+                    console.log(chalk.red('Command not valid!'));
+                    console.log(chalk.magenta('Press enter to continue'));
+                }
+            }
+            else{
+                console.log(chalk.red('File does not exists'));
+                console.log(chalk.magenta('Press enter to continue'));
+            }
+        }
+        else if(query[1] != undefined && query[1].length > 0 && query[4] == 'ORDER' && query[5] == 'BY' && query.length == 7 || query.length == 8){
+            path = newPath + '/' + query[3].trim().toLowerCase();
+            if(fs.existsSync(path) && query[3].trim().toLowerCase().match('.csv') && query[3].trim().toLowerCase().length > 4){
+                if(query[2] == 'FROM' && query.length == 7){
+                    try{
+                        cli.action.start('loading file ...');
+                        let jsonArray = await csv().fromFile(path);
+                        cli.action.stop();
+                        try{
+                            let keys = Object.keys(jsonArray[0]);
+                            let find = query[1].toLowerCase().trim().split(',');
+                            let result = arraySort(jsonArray, query[6].toLowerCase());
+                            let printable = [];
+                            let flag = 0;
+                            for(let i in keys){
+                                for(let j in find){
+                                    if(keys[i] == find[j]){
+                                        flag++;
+                                    }
+                                }
+                            }
+                            if(flag <= keys.length){
+                                for(let i in result){
+                                    let temp = {};
+                                    for(let j in find){
+                                        temp[find[j]] = result[i][find[j]];
+                                    }
+                                    printable.push(temp);
+                                }
+                                console.table(printable);
+                                console.log(chalk.magenta('Press enter to continue'));
+                            }
+                            else{
+                                console.log(chalk.red('Column not found!'));
+                                console.log(chalk.magenta('Press enter to continue'));
+                            }
+                            
+                        }
+                        catch(err){
+                            console.log(chalk.red(err));
+                            console.log(chalk.red(`Column ${query[6].toLowerCase()} not found!`));
+                            console.log(chalk.magenta('Press enter to continue'));
+                        }
+                    }
+                    catch(err){
+                        console.log(chalk.red(err));
+                        console.log(chalk.magenta('Press enter to continue'));
+                    }
+                }
+                else if(query[2] == 'FROM' && query.length == 8 && query[7] == 'DESC'){
+                    try{
+                        cli.action.start('loading file ...');
+                        let jsonArray = await csv().fromFile(path);
+                        cli.action.stop();
+                        try{
+                            let keys = Object.keys(jsonArray[0]);
+                            let find = query[1].toLowerCase().trim().split(',');
+                            let result = arraySort(jsonArray, query[6].toLowerCase(), {reverse: true});
+                            let printable = [];
+                            let flag = 0;
+                            for(let i in keys){
+                                for(let j in find){
+                                    if(keys[i] == find[j]){
+                                        flag++;
+                                    }
+                                }
+                            }
+                            if(flag <= keys.length){
+                                for(let i in result){
+                                    let temp = {};
+                                    for(let j in find){
+                                        temp[find[j]] = result[i][find[j]];
+                                    }
+                                    printable.push(temp);
+                                }
+                                console.table(printable);
+                                console.log(chalk.magenta('Press enter to continue'));
+                            }
+                            else{
+                                console.log(chalk.red('Column not found!'));
+                                console.log(chalk.magenta('Press enter to continue'));
+                            }
+                            
+                        }
+                        catch(err){
+                            console.log(chalk.red(err));
+                            console.log(chalk.red(`Column ${query[6].toLowerCase()} not found!`));
+                            console.log(chalk.magenta('Press enter to continue'));
+                        }
+                    }
+                    catch(err){
+                        console.log(chalk.red(err));
+                        console.log(chalk.magenta('Press enter to continue'));
+                    }
+                }
+                else{
+                    console.log(chalk.red('Command not valid!'));
+                    console.log(chalk.magenta('Press enter to continue'));
+                }
+            }
+            else{
+                console.log(chalk.red('File does not exists'));
+                console.log(chalk.magenta('Press enter to continue'));
+            }
         }
         else{
             console.log(chalk.red(`Cannot find ${query[1]} from given csv file!`));
