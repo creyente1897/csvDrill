@@ -199,7 +199,197 @@ module.exports = async function (input, path) {
                 console.log(chalk.magenta('Press enter to continue'));
             }     
         }
-        else if(query[1] != undefined && query[1] == '*' && query[4] == 'ORDER' && query[5] == 'BY' && query.length == 7 || query.length == 8){
+        else if(query[1] != undefined && query[1] == '*' && (query.length == 5 || query.length == 6)){
+            path = newPath + '/' + query[3].trim().toLowerCase();
+            if(fs.existsSync(path) && query[3].trim().toLowerCase().match('.csv') && query[3].trim().toLowerCase().length > 4){
+                cli.action.start('loading file ...');
+                let jsonArray = await csv().fromFile(path);
+                cli.action.stop();
+                if(query.length == 5){
+                    let limit = query[4].split('=');
+                    if(limit.length == 2 && limit[0] == 'LIMIT'){
+                        let limitValue = parseInt(limit[1], 10);
+                        if(typeof limitValue == 'number' && limitValue <= jsonArray.length){
+                            let result = [];
+                            for(let i = 0; i < limitValue; i++){
+                                result.push(jsonArray[i]);
+                            }
+                            console.table(result);
+                            console.log(chalk.magenta('Press enter to continue'));
+                        }
+                        else{
+                            console.log(chalk.red('No. of rows not found!'));
+                            console.log(chalk.magenta('Press enter to continue'));
+                        }
+                    }
+                    else{
+                        console.log(chalk.red('Command not found!'));
+                        console.log(chalk.magenta('Press enter to continue'));
+                    }
+                }
+                else if(query.length == 6){
+                    let limit = query[4].split('=');
+                    if(limit.length == 2 && limit[0] == 'LIMIT'){
+                        let limitValue = parseInt(limit[1], 10);
+                        if(typeof limitValue == 'number' && limitValue <= jsonArray.length){
+                            let offset = query[5].split('=');
+                            if(offset.length == 2 && offset[0] == 'OFFSET'){
+                                let offsetValue = parseInt(offset[1], 10);
+                                if(typeof offsetValue == 'number' && offsetValue <= jsonArray.length){
+                                    let result = [];
+                                    for(let i = offsetValue; i < limitValue+offsetValue; i++){
+                                        result.push(jsonArray[i]);
+                                    }
+                                    console.table(result);
+                                    console.log(chalk.magenta('Press enter to continue'));
+                                }
+                                else{
+                                    console.log(chalk.red('Offset Value Invalid!'));
+                                    console.log(chalk.magenta('Press enter to continue'));
+                                }
+                            }
+                            else{
+                                console.log(chalk.red('Command not found!'));
+                                console.log(chalk.magenta('Press enter to continue'));
+                            }
+                        }
+                        else{
+                            console.log(chalk.red('No. of rows not found!'));
+                            console.log(chalk.magenta('Press enter to continue'));
+                        }
+                    }
+                    else{
+                        console.log(chalk.red('Command not found!'));
+                        console.log(chalk.magenta('Press enter to continue'));
+                    }
+                }
+                else{
+                    console.log(chalk.red('Command not Valid!'));
+                    console.log(chalk.magenta('Press enter to continue'));
+                }
+            }
+            else{
+                console.log(chalk.red('File does not exists'));
+                console.log(chalk.magenta('Press enter to continue'));
+            }
+        
+        }
+        else if(query[1] != undefined && query[1].length > 0 && (query.length == 5 || query.length == 6)){
+            path = newPath + '/' + query[3].trim().toLowerCase();
+            if(fs.existsSync(path) && query[3].trim().toLowerCase().match('.csv') && query[3].trim().toLowerCase().length > 4){
+                cli.action.start('loading file ...');
+                let jsonArray = await csv().fromFile(path);
+                cli.action.stop();
+                if(query.length == 5){
+                    let limit = query[4].split('=');
+                    if(limit.length == 2 && limit[0] == 'LIMIT'){
+                        let limitValue = parseInt(limit[1], 10);
+                        if(typeof limitValue == 'number' && limitValue <= jsonArray.length){
+                            let find = query[1].trim().toLowerCase().split(',');
+                            let keys = Object.keys(jsonArray[0]);
+                            let flag = 0;
+                            for(let i in keys){
+                                for(let j in find){
+                                    if(keys[i] == find[j]){
+                                        flag++;
+                                    }
+                                }
+                            }
+                            if(flag <= keys.length){
+                                let result = [];
+                                for(let i = 0; i < limitValue; i++){
+                                    let tempObj = {};
+                                    for(let j in find){
+                                        tempObj[find[j]] = jsonArray[i][find[j]];
+                                    }
+                                    result.push(tempObj);
+                                }
+                                console.table(result);
+                                console.log(chalk.magenta('Press enter to continue'));
+                            }
+                            else{
+                                console.log(chalk.red('Column not found!'));
+                                console.log(chalk.magenta('Press enter to continue'));
+                            }
+                        }
+                        else{
+                            console.log(chalk.red('No. of rows not found!'));
+                            console.log(chalk.magenta('Press enter to continue'));
+                        }
+                    }
+                    else{
+                        console.log(chalk.red('Command not found!'));
+                        console.log(chalk.magenta('Press enter to continue'));
+                    }
+                }
+                else if(query.length == 6){
+                    let limit = query[4].split('=');
+                    if(limit.length == 2 && limit[0] == 'LIMIT'){
+                        let limitValue = parseInt(limit[1], 10);
+                        if(typeof limitValue == 'number' && limitValue <= jsonArray.length){
+                            let offset = query[5].split('=');
+                            if(offset.length == 2 && offset[0] == 'OFFSET'){
+                                let offsetValue = parseInt(offset[1], 10);
+                                if(typeof offsetValue == 'number' && offsetValue <= jsonArray.length){
+                                    let find = query[1].trim().toLowerCase().split(',');
+                                    let keys = Object.keys(jsonArray[0]);
+                                    let flag = 0;
+                                    for(let i in keys){
+                                        for(let j in find){
+                                            if(keys[i] == find[j]){
+                                                flag++;
+                                            }
+                                        }
+                                    }
+                ;
+                                    if(flag <= keys.length){
+                                        let result = [];
+                                        for(let i = offsetValue; i < limitValue+offsetValue; i++){
+                                            let tempObj = {};
+                                            for(let j in find){
+                                                tempObj[find[j]] = jsonArray[i][find[j]];
+                                            }
+                                            result.push(tempObj);
+                                        }
+                                        console.table(result);
+                                        console.log(chalk.magenta('Press enter to continue'));
+                                    }
+                                    else{
+                                        console.log(chalk.red('Column not found!'));
+                                        console.log(chalk.magenta('Press enter to continue'));
+                                    }
+                                }
+                                else{
+                                    console.log(chalk.red('Offset Value Invalid!'));
+                                    console.log(chalk.magenta('Press enter to continue'));
+                                }
+                            }
+                            else{
+                                console.log(chalk.red('Command not found!'));
+                                console.log(chalk.magenta('Press enter to continue'));
+                            }
+                        }
+                        else{
+                            console.log(chalk.red('No. of rows not found!'));
+                            console.log(chalk.magenta('Press enter to continue'));
+                        }
+                    }
+                    else{
+                        console.log(chalk.red('Command not found!'));
+                        console.log(chalk.magenta('Press enter to continue'));
+                    }
+                }
+                else{
+                    console.log(chalk.red('Command not Valid!'));
+                    console.log(chalk.magenta('Press enter to continue'));
+                }
+            }
+            else{
+                console.log(chalk.red('File does not exists'));
+                console.log(chalk.magenta('Press enter to continue'));
+            }
+        }
+        else if(query[1] != undefined && query[1] == '*' && query[4] == 'ORDER' && query[5] == 'BY' && (query.length == 7 || query.length == 8)){
             path = newPath + '/' + query[3].trim().toLowerCase();
             if(fs.existsSync(path) && query[3].trim().toLowerCase().match('.csv') && query[3].trim().toLowerCase().length > 4){
                 if(query[2] == 'FROM' && query.length == 7){
@@ -254,7 +444,7 @@ module.exports = async function (input, path) {
                 console.log(chalk.magenta('Press enter to continue'));
             }
         }
-        else if(query[1] != undefined && query[1].length > 0 && query[4] == 'ORDER' && query[5] == 'BY' && query.length == 7 || query.length == 8){
+        else if(query[1] != undefined && query[1].length > 0 && query[4] == 'ORDER' && query[5] == 'BY' && (query.length == 7 || query.length == 8)){
             path = newPath + '/' + query[3].trim().toLowerCase();
             if(fs.existsSync(path) && query[3].trim().toLowerCase().match('.csv') && query[3].trim().toLowerCase().length > 4){
                 if(query[2] == 'FROM' && query.length == 7){
@@ -580,6 +770,90 @@ module.exports = async function (input, path) {
                 console.log(chalk.red('Command not valid!'));
                 console.log(chalk.magenta('Press enter to continue'));
             }
+        }
+        else{
+            console.log(chalk.red('File does not exists'));
+            console.log(chalk.magenta('Press enter to continue'));
+        }
+        
+    }
+    else if(query[0] == 'DELETE' && query[1] == 'FROM' && query.length == 5){
+        let fileindex = path.lastIndexOf('/');
+        let newPath = path.substring(0, fileindex).trim();
+        path = newPath + '/' + query[2].trim().toLowerCase();
+        if(fs.existsSync(path) && query[2].trim().toLowerCase().match('.csv') && query[2].trim().toLowerCase().length > 0){
+            cli.action.start('loading file ...');
+            let jsonArray = await csv().fromFile(path);
+            cli.action.stop();
+            let find = query[4].trim().toLowerCase().split('&');
+            let findData = [];
+            for(let i in find){
+                findData.push(find[i].split('='));
+            }
+            let flag = 0;
+            let keys = Object.keys(jsonArray[0]);
+            for(let i in keys){
+                for(let j in findData){
+                    if(keys[i] == findData[j][0]){
+                        flag++;
+                    }
+                }
+            }
+            if(flag <= keys.length){
+                let tempArray = [];
+                for(let i in jsonArray){
+                    let findFlag = 0;
+                    for(let j in findData){
+                        if(jsonArray[i][findData[j][0]] == findData[j][1]){
+                            findFlag++;
+                        }
+                    }
+                    if(findFlag == findData.length){
+                        tempArray.push(parseInt(i, 10));
+                    }
+                }
+                if(tempArray.length > 0){
+                    for(let i in tempArray){
+                        tempArray[i] = tempArray[i] - i;
+                    }
+                    for(let i in tempArray){
+                       jsonArray.splice(tempArray[i],1);
+                    }
+                    let newJsonArray = [];
+                    for(let i in jsonArray){
+                        let tempArray = [];
+                        for(let j in keys){
+                            tempArray.push(jsonArray[i][keys[j]]);
+                        }
+                        newJsonArray.push(tempArray);
+                    }
+                    const createCsvWriters = require('csv-writer').createArrayCsvWriter;
+                    const csvWriter = createCsvWriters({
+                        header: keys,
+                        path: path
+                    });
+                    const records = newJsonArray;        
+                    csvWriter.writeRecords(records)
+                        .then(() => {
+                            console.log(chalk.green('Deleted Successfully!'));
+                            console.log(chalk.magenta('Press enter to continue'));
+                        })
+                        .catch((err) => {
+                            console.log(chalk.red(err));
+                            console.log(chalk.magenta('Press enter to continue'));
+                        })
+                        
+                }
+                else{
+                    console.log(chalk.red('Specified Row(s) not found!'));
+                    console.log(chalk.magenta('Press enter to continue'));
+                }
+            }
+            else{
+                console.log(chalk.red('Column(s) not found!'));
+                console.log(chalk.magenta('Press enter to continue'));
+            }
+
         }
         else{
             console.log(chalk.red('File does not exists'));
