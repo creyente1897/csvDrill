@@ -549,6 +549,59 @@ module.exports = async function (input, path) {
                 console.log(chalk.magenta('Press enter to continue'));
             }
         }
+        else if(query[1] != undefined && query[1].length > 0 && query[9] == 'JOIN' && query[11] == 'ON' && query.length == 13){
+            path = newPath + '/' + query[8].trim().toLowerCase();
+            let secPath = newPath + '/' + query[10].trim().toLowerCase();
+            if(fs.existsSync(path) && query[8].trim().toLowerCase().match('.csv') && query[8].trim().toLowerCase().length > 4 && fs.existsSync(secPath) && query[10].trim().toLowerCase().match('.csv') && query[10].trim().toLowerCase().length > 4){
+                cli.action.start('loading file ...');
+                let jsonArray = await csv().fromFile(path);
+                let jsonArray2 = await csv().fromFile(secPath);
+                cli.action.stop();
+                if(query[2] == 'AS' && query[5] == 'AS' && query[7] == 'FROM'){
+                    try{
+                        let joinOn = query[12].toLowerCase().trim().split('=');
+                        if(joinOn.length == 2 && jsonArray[0][query[1].toLowerCase()] && jsonArray2[0][query[4].toLowerCase()]){
+                            let data = [];
+                            for(let i in jsonArray){
+                                let temp = {};
+                                for(let j in jsonArray2){
+                                    if(jsonArray[i][joinOn[0].toLowerCase()] == jsonArray2[j][joinOn[1].toLowerCase()]){
+                                        temp[query[3].toLowerCase()] = jsonArray[i][query[1].toLowerCase()];
+                                        temp[query[6].toLowerCase()] = jsonArray2[j][query[4].toLowerCase()];
+                                    }
+                                }
+                                data.push(temp);
+                                temp ={};
+                            }
+                            if(data.length > 0){
+                                console.table(data);
+                                console.log(chalk.magenta('Press enter to continue'));
+                            }
+                            else{
+                                console.log(chalk.red('Rows Not Found!'));
+                                console.log(chalk.magenta('Press enter to continue'));
+                            }
+                        }
+                        else{
+                            console.log(chalk.red('Column Not Found!'));
+                            console.log(chalk.magenta('Press enter to continue'));    
+                        }
+                    }
+                    catch(err){
+                        console.log(chalk.red(err));
+                        console.log(chalk.magenta('Press enter to continue'));
+                    }
+                }
+                else{
+                    console.log(chalk.red('Command Not Valid!'));
+                    console.log(chalk.magenta('Press enter to continue'));
+                }
+            }
+            else{
+                console.log(chalk.red('File does not exists'));
+                console.log(chalk.magenta('Press enter to continue'));
+            }
+        }
         else{
             console.log(chalk.red(`Cannot find ${query[1]} from given csv file!`));
             console.log(chalk.magenta('Press enter to continue'));
