@@ -2,7 +2,7 @@ const fs = require('fs');
 const chalk = require('chalk');
 const {cli} = require('cli-ux');
 
-const command = require('./../modules/input');
+const command = require('./input');
 
 module.exports = function (path){
     if(fs.existsSync(path)){
