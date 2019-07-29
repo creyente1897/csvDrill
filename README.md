@@ -1,89 +1,62 @@
-csvDrill
-========
+# CSV Drill
 
-A cli tool capable of performing SQL queries on a csv file
+### CSV Drill is a CLI Tool for Performing SQL Query Execution on CSV Files
 
-[![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
-[![Version](https://img.shields.io/npm/v/csvDrill.svg)](https://npmjs.org/package/csvDrill)
-[![Downloads/week](https://img.shields.io/npm/dw/csvDrill.svg)](https://npmjs.org/package/csvDrill)
-[![License](https://img.shields.io/npm/l/csvDrill.svg)](https://github.com/creyente1897/csvDrill/blob/master/package.json)
+*NOTE: All commands and files should be lowercase and all the commands will be performed in lowercase*
 
-<!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
-# Usage
-<!-- usage -->
-```sh-session
-$ npm install -g csvDrill
-$ csvDrill COMMAND
-running command...
-$ csvDrill (-v|--version|version)
-csvDrill/0.0.0 linux-x64 node-v10.15.3
-$ csvDrill --help [COMMAND]
-USAGE
-  $ csvDrill COMMAND
-...
-```
-<!-- usagestop -->
-# Commands
-<!-- commands -->
-* [`csvDrill csvdrill`](#csvdrill-csvdrill)
-* [`csvDrill hello`](#csvdrill-hello)
-* [`csvDrill help [COMMAND]`](#csvdrill-help-command)
+### Documentation
 
-## `csvDrill csvdrill`
+Please click [here](https://github.com/creyente1897/csvDrill/blob/master/DOCUMENTATION.md) for documentation.
 
-Describe the command here
+## Prerequisites
 
-```
-USAGE
-  $ csvDrill csvdrill
+- NodeJS 
+- Npm
+- Oclif
+- Chalk
+- Cli UX
+- CSV Parser
+- Basic SQL Query Knowledge 
 
-OPTIONS
-  -n, --name=name  name to print
+## Local Installation
 
-DESCRIPTION
-  ...
-  Extra documentation goes here
+Clone the project
+
+```sh
+git clone https://github.com/creyente1897/csvDrill.git
+cd csvDrill
 ```
 
-_See code: [src/commands/csvdrill.js](https://github.com/creyente1897/csvDrill/blob/v0.0.0/src/commands/csvdrill.js)_
+Installing node modules (dependencies)
 
-## `csvDrill hello`
-
-Describe the command here
-
-```
-USAGE
-  $ csvDrill hello
-
-OPTIONS
-  -n, --name=name  name to print
-
-DESCRIPTION
-  ...
-  Extra documentation goes here
+```sh
+npm install
 ```
 
-_See code: [src/commands/hello.js](https://github.com/creyente1897/csvDrill/blob/v0.0.0/src/commands/hello.js)_
+Running the project (In terminal)
 
-## `csvDrill help [COMMAND]`
-
-display help for csvDrill
-
-```
-USAGE
-  $ csvDrill help [COMMAND]
-
-ARGUMENTS
-  COMMAND  command to show help for
-
-OPTIONS
-  --all  see all commands in CLI
+```sh
+./bin/run csvdrill --dbpath="path/to/directory"
+./bin/run csvdrill -d="path/to/directory"
 ```
 
-_See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.2.0/src/commands/help.ts)_
-<!-- commandsstop -->
-# csvDrill
-# csvDrill
+OR
+
+```sh
+./bin/run csvdrill --dbpath="path/to/file"
+./bin/run csvdrill -d="path/to/file"
+```
+
+*FOR HELP*
+
+```sh
+./bin/run csvdrill --help"
+```
+
+## Testing the app
+
+*Note: Please update the directory/file path before proceeding*
+
+```sh
+npm test
+```
