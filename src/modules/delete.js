@@ -1,13 +1,17 @@
+// Installed Dependencies
 const fs = require('fs');
 const chalk = require('chalk');
 const {cli} = require('cli-ux');
 const csv = require('csvtojson');
 
+// Function to delete a row from the table
+// @returns the same csv file with deleted column values
 module.exports = async function(query, path){
     let fileindex = path.lastIndexOf('/');
     let newPath = path.substring(0, fileindex).trim();
     path = newPath + '/' + query[2].trim().toLowerCase();
     if(fs.existsSync(path) && query[2].trim().toLowerCase().match('.csv') && query[2].trim().toLowerCase().length > 0){
+        // Load the file to perform the delete operation
         cli.action.start('loading file ...');
         let jsonArray = await csv().fromFile(path);
         cli.action.stop();
@@ -25,8 +29,11 @@ module.exports = async function(query, path){
                 }
             }
         }
+        // Check whther the column name exists or not
         if(flag <= keys.length){
             let tempArray = [];
+            // If exists then find the data and remove it from the JSON Array
+            // Now we can write the updated array in the file
             for(let i in jsonArray){
                 let findFlag = 0;
                 for(let j in findData){

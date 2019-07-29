@@ -1,12 +1,18 @@
+// Installed Dependencies
 const fs = require('fs');
 const chalk = require('chalk');
 const {cli} = require('cli-ux');
 
+// Required Module Exports
 const command = require('./input');
 
+// Function for checking whether the given path or file to that path exist or not
+// @returns = Next line to execute the SQL statements
 module.exports = function (path){
+    // Check whether the path exists or not
     if(fs.existsSync(path)){
       fs.lstat(path, async (err, result) => {
+        // Check whether the path is a directory
         if(result.isDirectory()){
             let file = await cli.prompt(chalk.bgCyan('Please enter a filename in lower case only(if not available it will be created)'));
             file = file.toLowerCase();
@@ -14,6 +20,7 @@ module.exports = function (path){
                 console.log(chalk.magenta('BYE!'));
             }
             else{
+                // Check whether a file is a csv file or not
                 if(file.trim().match('.csv')){
                     if(file.trim().length > 4){
                         const filePath = path + '/' +file.trim();
@@ -42,6 +49,7 @@ module.exports = function (path){
                 }
             }
           }
+          // Check whether the path is a file
           if(result.isFile()){
             let fileindex = path.lastIndexOf('/');
             let newPath = path.substring(0, fileindex).trim();

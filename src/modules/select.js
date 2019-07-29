@@ -1,3 +1,4 @@
+// Installed Dependencies
 const fs = require('fs');
 const chalk = require('chalk');
 const {cli} = require('cli-ux');
@@ -5,9 +6,12 @@ const csv = require('csvtojson');
 const arraySort = require('array-sort');
 const cTable = require('console.table');
 
+// Function to perform the select statement
+// @returns the a table with the selected values
 module.exports = async function (query, path){
     let fileindex = path.lastIndexOf('/');
     let newPath = path.substring(0, fileindex).trim();
+    // Select everything from a file
     if(query[1] != undefined && query[1] == '*' && query.length == 4){
         if(query[2] != undefined && query[2] == 'FROM'){
             if(query[3] != undefined && query[3].length > 0 && query.length == 4){
@@ -35,6 +39,7 @@ module.exports = async function (query, path){
             console.log(chalk.magenta('Press enter to continue'));
         }
     }
+    // Select particular columns from a file
     else if(query[1] != undefined && query[1].length > 0 && query.length == 4){
         if(query[2] != undefined && query[2] == 'FROM'){
             if(query[3] != undefined && query[3].trim().toLowerCase().match('.csv') && query[3].length > 4){
@@ -88,6 +93,7 @@ module.exports = async function (query, path){
             console.log(chalk.magenta('Press enter to continue'));
         }
     }
+    // Select all or particular columns from a file with a where attribute
     else if(query[1] != undefined && query[1].length > 0 && query[4] == 'WHERE' && query.length == 8){
         if(query[1] == '*' && query[2] == 'FROM'){
             if(query[3] != undefined && query[3].trim().toLowerCase().match('.csv') && query[3].length > 4){
@@ -108,6 +114,7 @@ module.exports = async function (query, path){
                                 }
                                 console.table(printable);
                                 printable = [];
+                                console.log(chalk.magenta('Press enter to continue'));
                             }
                             else{
                                 console.log(chalk.red('Cannot find values to search!'));
@@ -200,6 +207,7 @@ module.exports = async function (query, path){
             console.log(chalk.magenta('Press enter to continue'));
         }     
     }
+    // Select all columns from a file with a limit attribute
     else if(query[1] != undefined && query[1] == '*' && (query.length == 5 || query.length == 6)){
         path = newPath + '/' + query[3].trim().toLowerCase();
         if(fs.existsSync(path) && query[3].trim().toLowerCase().match('.csv') && query[3].trim().toLowerCase().length > 4){
@@ -275,6 +283,7 @@ module.exports = async function (query, path){
         }
     
     }
+    // Select particular columns from a file with a limit attribute
     else if(query[1] != undefined && query[1].length > 0 && (query.length == 5 || query.length == 6)){
         path = newPath + '/' + query[3].trim().toLowerCase();
         if(fs.existsSync(path) && query[3].trim().toLowerCase().match('.csv') && query[3].trim().toLowerCase().length > 4){
@@ -390,6 +399,7 @@ module.exports = async function (query, path){
             console.log(chalk.magenta('Press enter to continue'));
         }
     }
+    // Select all columns from a file with an order by attribute
     else if(query[1] != undefined && query[1] == '*' && query[4] == 'ORDER' && query[5] == 'BY' && (query.length == 7 || query.length == 8)){
         path = newPath + '/' + query[3].trim().toLowerCase();
         if(fs.existsSync(path) && query[3].trim().toLowerCase().match('.csv') && query[3].trim().toLowerCase().length > 4){
@@ -445,6 +455,7 @@ module.exports = async function (query, path){
             console.log(chalk.magenta('Press enter to continue'));
         }
     }
+    // Select particular columns from a file with an order by attribute
     else if(query[1] != undefined && query[1].length > 0 && query[4] == 'ORDER' && query[5] == 'BY' && (query.length == 7 || query.length == 8)){
         path = newPath + '/' + query[3].trim().toLowerCase();
         if(fs.existsSync(path) && query[3].trim().toLowerCase().match('.csv') && query[3].trim().toLowerCase().length > 4){
@@ -550,6 +561,7 @@ module.exports = async function (query, path){
             console.log(chalk.magenta('Press enter to continue'));
         }
     }
+    // Select particular values after joinin two tables
     else if(query[1] != undefined && query[1].length > 0 && query[9] == 'JOIN' && query[11] == 'ON' && query.length == 13){
         path = newPath + '/' + query[8].trim().toLowerCase();
         let secPath = newPath + '/' + query[10].trim().toLowerCase();

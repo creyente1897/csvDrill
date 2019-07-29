@@ -1,7 +1,10 @@
+// Installed Dependencies
 const fs = require('fs');
 const chalk = require('chalk');
 const createCsvWriter = require('csv-writer').createArrayCsvWriter;
 
+// Function to perform Insert Operations on the given file
+// @returns the file with the appended values
 module.exports = async function(query, path){
     let fileindex = path.lastIndexOf('/');
     let newPath = path.substring(0, fileindex).trim();
@@ -15,6 +18,7 @@ module.exports = async function(query, path){
                 let dataValues = recordString[i].split(',');
                 record.push(dataValues);
             }
+            // Check whether the no. of values and the no. of input columns are same or not
             let invalidValues = false;
             for(let i in record){
                 if(data.length != record[i].length){
@@ -22,6 +26,7 @@ module.exports = async function(query, path){
                     break;
                 }
             }
+            // Inser the values in the csv file
             if(invalidValues == false){
                 const csvWriter = createCsvWriter({
                     path: path,

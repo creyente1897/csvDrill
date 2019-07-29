@@ -1,8 +1,11 @@
+// Installed Dependencies
 const fs = require('fs');
 const chalk = require('chalk');
 const {cli} = require('cli-ux');
 const csv = require('csvtojson');
 
+// Function to perform the update operation on the file
+// @returns the file with the updated values
 module.exports = async function(query, path){
     let fileindex = path.lastIndexOf('/');
     let newPath = path.substring(0, fileindex).trim();
@@ -26,6 +29,7 @@ module.exports = async function(query, path){
                 let dataFlag = 0;
                 let valueFlag = 0;
                 let keys = Object.keys(jsonArray[0]);
+                // Check whether the column name and the data provided exists or not
                 for(let i in keys){
                     for(let j in setData){
                         if(keys[i].toLowerCase() == setData[j][0]){
@@ -40,6 +44,7 @@ module.exports = async function(query, path){
                         }
                     }
                 }
+                // If exists then update the values of the particular columns
                 let conditionFlag = 0;
                 if(dataFlag > 0 && valueFlag > 0){
                     for(let i in jsonArray){

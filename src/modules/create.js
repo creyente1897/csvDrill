@@ -1,13 +1,17 @@
+// Installed Dependencies
 const fs = require('fs');
 const chalk = require('chalk');
 const {cli} = require('cli-ux');
 const cTable = require('console.table');
 
+// Function to create a csv file
+// @returns a new csv file at the provided path
 module.exports = async function (query, path){
     let fileindex = path.lastIndexOf('/');
     let newPath = path.substring(0, fileindex).trim();
     if(query[2] != undefined && query[2].length > 4 && query[2].trim().toLowerCase().match('.csv')){
         path = newPath + '/' + query[2].trim().toLowerCase();
+        // Check whether the file name already exists or not
         if(fs.existsSync(path)){
             console.log(chalk.red('File already exists!'));
             console.log(chalk.magenta('Press enter to continue'));
@@ -18,6 +22,7 @@ module.exports = async function (query, path){
                 let data = query[3].toLowerCase().split(',');
                 if(data != undefined && data.length > 0){
                     cli.action.start('Processing');
+                    // Append file will create a file and append the colomns provided in the data in it
                     fs.appendFile(path, data, async (err) => {
                         if(err) throw chalk.red(err);
                         else{
