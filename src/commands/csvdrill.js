@@ -20,7 +20,7 @@ After the path has been verified, you can visit the following link to know more 
 
 NOTE: All commands and files should be lowercase and all the commands will be performed in lowercase
 
-https://github.com/creyente1897/csvDrill/blob/master/README.md
+https://github.com/creyente1897/csvDrill/blob/master/DOCUMENTATION.md
 
 `
 CsvdrillCommand.flags = {
